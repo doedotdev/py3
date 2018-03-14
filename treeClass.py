@@ -8,7 +8,9 @@ class Node:
     def __init__(self, val):
         self.val = val
         self.children = []
+        self.parent = ""
         self.freq = 1
+        self.path = []
 
     def get(self):
         return self.val
@@ -30,42 +32,58 @@ class Node:
     def printStats(self):
         print("Value: " + str(self.val) + " | " +
               "Frequency: " + str(self.freq) + " | " +
-              "Children: " + ','.join(self.getChildren()))
+              "Parent: " + str(self.parent) + " | " +
+              "Children: " + ','.join(self.getChildren())
+              )
 
 
-class Tree:
+class PythonTree:
     def __init__(self):
         self.root = Node("*root*")
+        self.root.parent = "NONE"
+        self.root.path = ["*root*"]
         self.totalTreeNodes = 1
         self.totalInsertions = 1
         self.treeDepth = 0
         self.visualDict = {self.root.get()}
 
     def setVisualDict(self, passedMatrix):
-        root = {}
+        root = dict()
         for transaction in passedMatrix:
             tempDict = root
             for item in transaction:
-                tempDict = tempDict.setdefault(item, {})
+                if item in tempDict.keys():
+                    tempDict[item]['count'] += 1
+                tempDict = tempDict.setdefault(item, {'count': 1})
         self.visualDict = root
 
     def addByMatrix(self, passedMatrix):
+
         self.setVisualDict(passedMatrix)
+
         for subArray in passedMatrix:
             currentNode = self.root
             tempLength = len(subArray)
             if tempLength > self.treeDepth:
                 self.treeDepth = tempLength
+            tempPath = [self.root.get()]
             for each in subArray:
                 self.totalInsertions += 1
                 if each in currentNode.getChildren():
+                    tempPath.append(each)
                     currentNode = currentNode.getChild(each)
                     currentNode.freq += 1
                 else:
                     self.totalTreeNodes += 1
                     tempNode = Node(each)
+                    tempParent = currentNode.get()
                     currentNode.children.append(tempNode)
                     currentNode = tempNode
+                    currentNode.parent = tempParent
+                    currentNode.path = tempPath
+                    currentNode.path.append(each)
+
+
 
     def preOrder(self, currentNode, retArray):
         retArray.append(currentNode.get())
@@ -157,24 +175,24 @@ class Tree:
         print(json.dumps(self.visualDict, indent=5))
 
 
-myTree = Tree()
-myTree.addByMatrix([['F', 'B', 'A'],
-                    ['F', 'B', 'D', 'C'],
-                    ['F', 'B', 'D', 'E'],
-                    ['F', 'G', 'I', 'J'],
-                    ['F', 'G', 'I', 'H']])
-
-print("\nPRE ORDER TRAVERSAL")
-print(myTree.preOrderTraversal())
-
-print("\nLEVEL ORDER TRAVERSAL")
-print(myTree.levelOrderTraversal())
-
-print("\nIN ORDER TRAVERSAL")
-print(myTree.inOrderTraversal())
-
-print("\nPOST ORDER TRAVERSAL")
-print(myTree.postOrderTraversal())
-
-print("\nTREE STATS")
-myTree.getTreeStats()
+# myTree = PythonTree()
+# myTree.addByMatrix([['F', 'B', 'A'],
+#                     ['F', 'B', 'D', 'C'],
+#                     ['F', 'B', 'D', 'E'],
+#                     ['F', 'G', 'I', 'J'],
+#                     ['F', 'G', 'I', 'H']])
+#
+# print("\nPRE ORDER TRAVERSAL")
+# print(myTree.preOrderTraversal())
+#
+# print("\nLEVEL ORDER TRAVERSAL")
+# print(myTree.levelOrderTraversal())
+#
+# print("\nIN ORDER TRAVERSAL")
+# print(myTree.inOrderTraversal())
+#
+# print("\nPOST ORDER TRAVERSAL")
+# print(myTree.postOrderTraversal())
+#
+# print("\nTREE STATS")
+# myTree.getTreeStats()
