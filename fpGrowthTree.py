@@ -31,10 +31,15 @@ class FrequentPatternGrowthTree:
         if self.k == -1:  # use all frequencies and items if is -1
             return list(self.initialFrequencyDict)
         else:
-            return list(islice(self.initialFrequencyDict, self.k))
+            tempDict = {}
+            for key, value in self.initialFrequencyDict.items():
+                # print(str(key) + ' : ' + str(value))
+                if value >= self.k:
+                    tempDict[key] = value
+            return list(tempDict)
 
     def printTopKFrequencies(self):
-        print("\nTOP K FREQUENCIES WHERE K = " + str(self.k))
+        print("\nTOP FREQUENCIES WHERE MIN SUPPORT K = " + str(self.k))
         print(json.dumps(self.topKFrequencies, indent=5))
 
     def getFrequencySortedTransactions(self):
@@ -66,17 +71,14 @@ class FrequentPatternGrowthTree:
         return 4
 
 
-# TRANSACTIONS = [['A', 'B', 'C', 'E', 'G', 'H'],
-#                 ['A', 'B', 'E', 'F', 'M'],
-#                 ['B', 'C', 'D', 'E', 'G', 'M'],
-#                 ['A', 'B', 'C', 'H'],
-#                 ['C', 'D', 'E', 'F', 'M'],
-#                 ['A', 'B', 'C', 'E', 'H'],
-#                 ['B', 'C', 'E', 'G', 'H', 'M']]
-
 TRANSACTIONS = [['A', 'B', 'C', 'E', 'G', 'H'],
                 ['A', 'B', 'E', 'F', 'M'],
-                ['B', 'C', 'D', 'E', 'G', 'M']]
+                ['B', 'C', 'D', 'E', 'G', 'M'],
+                ['A', 'B', 'C', 'H'],
+                ['C', 'D', 'E', 'F', 'M'],
+                ['A', 'B', 'C', 'E', 'H'],
+                ['B', 'C', 'E', 'G', 'H', 'M']]
+
 
 fpGrowthTree = FrequentPatternGrowthTree(TRANSACTIONS)
 fpGrowthTree.printInitialFrequencies()
